@@ -47,4 +47,4 @@ Solução:
 ```
 
 ### Observação
-É possível que o algoritmo retorne atribuições válidas diferentes caso a fórmula seja satisfatível, o que importa é a decisão sobre a satisfatibilidade da fórmula esteja correta.
+É possível que, em execuçoes diferentes, o algoritmo retorne atribuições válidas diferentes para a mesma fórmula caso esta seja satisfatível. Isso se deve ao fato de uma fórmula poder ter mais de uma atribuição que a torne verdadeira. No entanto, o que importa é que a decisão sobre a satisfatibilidade em si esteja correta.
