@@ -1,7 +1,7 @@
 # Resolvedor SAT-CNF
 Este código é parte do projeto da disciplina **Projeto e Complexidade de Algoritmos 1** na Universidade de Brasília no período 1/2025. Ele decide o problema de Satisfatibilidade de Fórmulas Booleanas em sua [Forma Normal Conjuntiva](https://en.wikipedia.org/wiki/Conjunctive_normal_form) utilizando o [Algoritmo DPLL](https://en.wikipedia.org/wiki/DPLL_algorithm). Além de apenas decidir se uma fórmula dada é satisfatível, ele também retorna uma possível solução, caso exista.
 
-Boa parte deste código foi tirado [desta fonte](https://github.com/safwankdb/SAT-Solver-using-DPLL), com apenas algumas modificações simples e comentários adicionados.
+Tiramos inspiração [desta fonte](https://github.com/safwankdb/SAT-Solver-using-DPLL) e executamos algumas modificações que contemplam aceitar fórmulas com variáveis de comprimento maior que 1 e indexação. Isso nos livra da limitaçao (pelo tamanho do nosso alfabeto) de variáveis que podemos adicionar ná fórmula.
 
 ## Como Usar
 Escrevemos em um arquivo texto uma fórmula em FNC separando as cláusulas por linha. Por exemplo:
