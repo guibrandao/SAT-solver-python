@@ -8,8 +8,13 @@ def CNF3(formula):
     p = formula[:delimitador]
     q = formula[delimitador+1:]
     if q[0] == '!':
-        cnf = f'({q[1:]}|{p})&({q}|!{p})'
-        return cnf.replace("!!","")
+        formulaNegativa = True
+        for simbolo in q:
+            if simbolo in OPERACOES:
+                formulaNegativa = False
+        if formulaNegativa:
+            cnf = f'({q[1:]}|{p})&({q}|!{p})'
+            return cnf.replace("!!","")
     x1,x2 = '', ''
     operador = ''
     cnf = formula
@@ -90,6 +95,16 @@ def transformacaoTseytin(formula):
         cnfTseytin += CNF3(subFormula)+'&'
     cnfTseytin = cnfTseytin[:-1]
     print(f'A transformação para CNF de Tseytin resultante é: \n {cnfTseytin}')
+    return cnfTseytin
 
-transformacaoTseytin(formula)
+def mudarSintaxeCNF(formula):
+    formula = formula.replace('|',' ')
+    formula = formula.replace('&','\n')
+    formula = formula.replace('(','')
+    formula = formula.replace(')','')
+    return formula
 
+cnf = transformacaoTseytin(formula)
+
+print('CNF na forma do SAT (& = pular linha e | = espaço):')
+print(mudarSintaxeCNF(cnf))
