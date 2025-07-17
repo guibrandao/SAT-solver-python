@@ -1,5 +1,6 @@
 import sys
 import re
+import CNF_Tseytin_Transformer as transform
 from copy import deepcopy
 
 true_vars = set() #Conjunto de variáveis verdadeiras
@@ -33,15 +34,14 @@ def unit_propagation(cnf, new_true, new_false):
         for unit in units:
             n_props += 1 #Incrementamos em 1 para cada cláusula unitária que encontrarmos
             if '!' in unit: 
-                print('teste:')
                 false_vars.add(unit[1:])
                 new_false.append(unit[1:]) #Se houver um simbolo de negação, adicionamos a variável (chamemos de A, por exemplo) ao conjunto de variáveis falsas e a lista de atribuições falsas
                 i = 0 #Começamos a percorrer a fórmula
                 while True:
-                    if unit in cnf[i]: #Aqui indica que o literal !A ocorre na iesima clausula
+                    if unit in cnf[i].split(): #Aqui indica que o literal !A ocorre na iesima clausula
                         cnf.remove(cnf[i]) #Podemos remover essa clausula, ja que A é falso, i.e. !A é verdadeiro, logo a clausula toda é verdadeira
                         i -= 1
-                    elif unit[1:] in cnf[i]: #Aqui indica que o literal A ocorre na iesima clausula
+                    elif unit[1:] in cnf[i].split(): #Aqui indica que o literal A ocorre na iesima clausula
                         cnf[i] = cnf[i].replace(unit[1:], '').strip() #Removemos o literal A da clausula, ja que este é falso e nao pode mais contribuir pra satisfatibilidade
                     i += 1
                     if i >= len(cnf): 
@@ -51,11 +51,11 @@ def unit_propagation(cnf, new_true, new_false):
                 new_true.append(unit) #Se nao houver um simbolo de negaçao, adicionamos a variavel ao conjunto de variaveis verdadeiras e a lista de atribuições verdadeiras
                 i = 0 #Começamos a percorrer a fórmula
                 while True:
-                    if '!'+unit in cnf[i]:
+                    if '!'+unit in cnf[i].split():
                         cnf[i] = cnf[i].replace('!'+unit, '').strip() #Se ocorrer o literal !A, este é falso, logo removemos da clausula
                         if '  ' in cnf[i]:
                             cnf[i] = cnf[i].replace('  ', ' ') 
-                    elif unit in cnf[i]:
+                    elif unit in cnf[i].split():
                         cnf.remove(cnf[i]) #Se ocorrer o literal A, podemos remover a clausula inteira
                         i -= 1
                     i += 1
@@ -105,9 +105,25 @@ def solve(cnf,literals):
         backtracking(new_true,new_false)
         return False 
 
+def verificaSintaxeETransforma(cnf):
+    for simbolo in cnf:
+        if simbolo in transform.OPERACOES:
+            cnf = transform.transformacaoTseytin(cnf)
+            return transform.mudarSintaxeCNF(cnf)
+    return cnf
+
 def dpll(): #Aqui é onde a execução ocorre
     global true_vars, false_vars, n_props, n_splits #Usamos as variáveis globais
-    input_cnf = open(sys.argv[1], 'r').read() #Damos como entrada um arquivo cujo nome damos
+    if len(sys.argv)<2:
+        print('Nenhum arquivo selecionado. Digite uma fórmula ou um caminho válido:')
+        print('Escreva a sua fórmula usando os seguintes simbolos: ')
+        print('> := ->; \n < := <-; \n = := <->; \n & := ∧; \n | := v; \n ! := ¬')
+        input_cnf = input('Fórmula ou caminho: ')
+        if '/' in input_cnf:
+            input_cnf = open(input_cnf,'r').read()
+    else:
+        input_cnf = open(sys.argv[1], 'r').read() #Damos como entrada um arquivo cujo nome damos
+    input_cnf = verificaSintaxeETransforma(input_cnf)
     literals = extractLiterals(input_cnf)
     cnf = input_cnf.splitlines() #Definimos nossa formula em FNC onde cada clausula está separada em cada linha no arquivo de entrada
     if solve(cnf, literals): #Chamamos nosa funçao que resolve a fórmula dada
