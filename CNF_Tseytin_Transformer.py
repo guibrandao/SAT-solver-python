@@ -1,3 +1,4 @@
+import re
 formula = '!((!s&p)=((q>r)|!p))'
 OPERACOES = ["&","|","<",">","="]
 numero_variaveis_novas = 0
@@ -86,7 +87,7 @@ def verificarParentesesInicial(formula):
     else:
         return False
 
-def transformacaoTseytin(formula):
+def transformacaoTseytinDescritiva(formula):
     print(f'A sua fórmula é: \n {formula}')
     lista = listaSubformulas(formula)
     print(f'As sub-fórmulas são: \n {lista}')
@@ -104,7 +105,13 @@ def mudarSintaxeCNF(formula):
     formula = formula.replace(')','')
     return formula
 
-cnf = transformacaoTseytin(formula)
-
-print('CNF na forma do SAT (& = pular linha e | = espaço):')
-print(mudarSintaxeCNF(cnf))
+def transformacaoTseytin(formula):
+    # Se já tiver em CNF, não faz nada
+    if re.match(r"(\(!?[a-zA-Z0-9]+(\|!?[a-zA-Z0-9]+)*?\)&?)+",formula):
+        return formula
+    lista = listaSubformulas(formula)
+    cnfTseytin = ''
+    for subFormula in lista:
+        cnfTseytin += CNF3(subFormula)+'&'
+    cnfTseytin = cnfTseytin[:-1]
+    return cnfTseytin
