@@ -1,4 +1,5 @@
 import sys
+import re
 from copy import deepcopy
 
 true_vars = set() #Conjunto de variáveis verdadeiras
@@ -14,24 +15,34 @@ def print_cnf(cnf): #Recebe uma lista de strings (cláusulas)
         s = '()' #Definimos s como '()' para indicar que temos uma fórmula vazia
     print(s)
 
+def isUnit(cnfLine):
+    return ' ' not in cnfLine
+
+def isLiteral(word):
+    return re.match(r"([a-zA-Z])(\d*)",word)
+
+def extractLiterals(input_cnf):
+    input = input_cnf.replace('\n',' ')
+    return [i for i in set(input.split()) if isLiteral(i)]
 
 def unit_propagation(cnf, new_true, new_false):
     global true_vars, false_vars, n_props, n_splits
-    units = [i for i in cnf if len(i)<3]  #Armazena em lista todas as cláusulas com um único literal
+    units = [i for i in cnf if isUnit(i)]  #Armazena em lista todas as cláusulas com um único literal
     units = list(set(units)) #Novamente removemos cláusulas duplicadas
     if len(units): #Verificamos se de fato existem cláusulas unitárias
         for unit in units:
             n_props += 1 #Incrementamos em 1 para cada cláusula unitária que encontrarmos
             if '!' in unit: 
-                false_vars.add(unit[-1])
-                new_false.append(unit[-1]) #Se houver um simbolo de negação, adicionamos a variável (chamemos de A, por exemplo) ao conjunto de variáveis falsas e a lista de atribuições falsas
+                print('teste:')
+                false_vars.add(unit[1:])
+                new_false.append(unit[1:]) #Se houver um simbolo de negação, adicionamos a variável (chamemos de A, por exemplo) ao conjunto de variáveis falsas e a lista de atribuições falsas
                 i = 0 #Começamos a percorrer a fórmula
                 while True:
                     if unit in cnf[i]: #Aqui indica que o literal !A ocorre na iesima clausula
                         cnf.remove(cnf[i]) #Podemos remover essa clausula, ja que A é falso, i.e. !A é verdadeiro, logo a clausula toda é verdadeira
                         i -= 1
-                    elif unit[-1] in cnf[i]: #Aqui indica que o literal A ocorre na iesima clausula
-                        cnf[i] = cnf[i].replace(unit[-1], '').strip() #Removemos o literal A da clausula, ja que este é falso e nao pode mais contribuir pra satisfatibilidade
+                    elif unit[1:] in cnf[i]: #Aqui indica que o literal A ocorre na iesima clausula
+                        cnf[i] = cnf[i].replace(unit[1:], '').strip() #Removemos o literal A da clausula, ja que este é falso e nao pode mais contribuir pra satisfatibilidade
                     i += 1
                     if i >= len(cnf): 
                         break
@@ -72,7 +83,6 @@ def solve(cnf,literals):
     false_vars = set(false_vars)
     n_splits += 1 #Incrementa o número de decisões
     cnf = list(set(cnf)) #Ao transformar em conjunto e depois voltar para lista, removemos as possíveis cláusulas duplicadas
-    
     unit_propagation(cnf, new_true, new_false)
 
     if len(cnf) == 0:
@@ -84,8 +94,7 @@ def solve(cnf,literals):
         return False #Indicamos que esse ramo nao levou a uma solução
 
     #O proximo passo é olhar as clausulas não unitárias
-
-    literals = [k for k in list(set(''.join(cnf))) if k.isalpha()] #Extraimos todas os literais que nao tem negação
+    literals = extractLiterals(' '.join(cnf)) #Extraimos todas os literais que nao tem negação
 
     x = literals[0] #Escolhe a primeira variável nao atribuída da lista
     if solve(deepcopy(cnf)+[x], deepcopy(literals)): #Chamamos recursivamente nossa função solve considerando x como literal verdadeiro, se for verdadeiro, retornamos verdade
@@ -96,11 +105,10 @@ def solve(cnf,literals):
         backtracking(new_true,new_false)
         return False 
 
-
 def dpll(): #Aqui é onde a execução ocorre
     global true_vars, false_vars, n_props, n_splits #Usamos as variáveis globais
     input_cnf = open(sys.argv[1], 'r').read() #Damos como entrada um arquivo cujo nome damos
-    literals = [i for i in list(set(input_cnf)) if i.isalpha()] #Extraimos todos os literais sem negaçao
+    literals = extractLiterals(input_cnf)
     cnf = input_cnf.splitlines() #Definimos nossa formula em FNC onde cada clausula está separada em cada linha no arquivo de entrada
     if solve(cnf, literals): #Chamamos nosa funçao que resolve a fórmula dada
         print('\nNúmero de Decisões =', n_splits)
