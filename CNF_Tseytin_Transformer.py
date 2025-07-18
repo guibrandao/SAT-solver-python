@@ -89,6 +89,7 @@ def verificarParentesesInicial(formula):
 
 def transformacaoTseytinDescritiva(formula):
     print(f'A sua fórmula é: \n {formula}')
+    formula = formula.replace('!!','')
     lista = listaSubformulas(formula)
     print(f'As sub-fórmulas são: \n {lista}')
     cnfTseytin = ''
@@ -103,12 +104,14 @@ def mudarSintaxeCNF(formula):
     formula = formula.replace('&','\n')
     formula = formula.replace('(','')
     formula = formula.replace(')','')
+    formula = formula.replace('!!','')
     return formula
 
 def transformacaoTseytin(formula):
     # Se já tiver em CNF, não faz nada
     if re.match(r"(\(!?[a-zA-Z0-9]+(\|!?[a-zA-Z0-9]+)*?\)&?)+",formula):
         return formula
+    formula = formula.replace('!!','')
     lista = listaSubformulas(formula)
     cnfTseytin = ''
     for subFormula in lista:
