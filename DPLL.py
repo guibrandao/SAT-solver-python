@@ -26,10 +26,10 @@ def removeEmpty(cnfLine):
     return cnfLine
 
 def isLiteral(word):
-    return re.match(r"!?([a-zA-Z])(\d*)",word)
+    return re.match(r"([a-zA-Z])(\d*)",word)
 
 def extractLiterals(input_cnf):
-    input = input_cnf.replace('\n',' ')
+    input = input_cnf.replace('\n',' ').replace('!','')
     return [i for i in set(input.split()) if isLiteral(i)]
 
 def unit_propagation(cnf, new_true, new_false):
