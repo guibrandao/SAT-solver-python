@@ -20,7 +20,7 @@ def isUnit(cnfLine):
     return ' ' not in cnfLine
 
 def isLiteral(word):
-    return re.match(r"([a-zA-Z])(\d*)",word)
+    return re.match(r"!?([a-zA-Z])(\d*)",word)
 
 def extractLiterals(input_cnf):
     input = input_cnf.replace('\n',' ')
@@ -95,7 +95,6 @@ def solve(cnf,literals):
 
     #O proximo passo é olhar as clausulas não unitárias
     literals = extractLiterals(' '.join(cnf)) #Extraimos todas os literais que nao tem negação
-
     x = literals[0] #Escolhe a primeira variável nao atribuída da lista
     if solve(deepcopy(cnf)+[x], deepcopy(literals)): #Chamamos recursivamente nossa função solve considerando x como literal verdadeiro, se for verdadeiro, retornamos verdade
         return True
@@ -108,7 +107,7 @@ def solve(cnf,literals):
 def verificaSintaxeETransforma(cnf):
     for simbolo in cnf:
         if simbolo in transform.OPERACOES:
-            cnf = transform.transformacaoTseytin(cnf)
+            cnf = transform.transformacaoTseytinDescritiva(cnf)
             return transform.mudarSintaxeCNF(cnf)
     return cnf
 
