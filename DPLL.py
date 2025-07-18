@@ -59,8 +59,6 @@ def unit_propagation(cnf, new_true, new_false):
                 i = 0 #Começamos a percorrer a fórmula
                 while True:
                     removeEmpty(cnf[i])
-                    print(cnf[i])
-                    print(cnf[i].split())
                     if '!'+unit in cnf[i].split():
                         cnf[i] = cnf[i].replace('!'+unit, '').strip() #Se ocorrer o literal !A, este é falso, logo removemos da clausula
                         removeEmpty(cnf[i])
