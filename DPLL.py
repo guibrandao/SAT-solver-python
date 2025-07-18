@@ -11,13 +11,19 @@ def print_cnf(cnf): #Recebe uma lista de strings (cláusulas)
     s = ''
     for i in cnf:
         if len(i) > 0: #Verificamos se a cláusula não é vazia
-            s += '(' + i.replace(' ', '+') + ')' #Caso não seja vazia, substitui todos os ' ' por '+' e a colocamos a cláusula entre parênteses. Depois disso, concatena a cláusula recem formatada com as anteriores.
+            t = i.replace('  ', ' ') 
+            s += '(' + t.replace(' ', '+') + ')' #Caso não seja vazia, substitui todos os ' ' por '+' e a colocamos a cláusula entre parênteses. Depois disso, concatena a cláusula recem formatada com as anteriores.
     if s == '': #Verificamos se a string continua vazia após o novo formato (isso significa que a entrada cnf era vazia, logicamente isso é verdadeiro).
         s = '()' #Definimos s como '()' para indicar que temos uma fórmula vazia
     print(s)
 
 def isUnit(cnfLine):
     return ' ' not in cnfLine
+
+def removeEmpty(cnfLine):
+    if '  ' in cnfLine:
+        return cnfLine.replace('  ', ' ') 
+    return cnfLine
 
 def isLiteral(word):
     return re.match(r"!?([a-zA-Z])(\d*)",word)
@@ -38,6 +44,7 @@ def unit_propagation(cnf, new_true, new_false):
                 new_false.append(unit[1:]) #Se houver um simbolo de negação, adicionamos a variável (chamemos de A, por exemplo) ao conjunto de variáveis falsas e a lista de atribuições falsas
                 i = 0 #Começamos a percorrer a fórmula
                 while True:
+                    removeEmpty(cnf[i])
                     if unit in cnf[i].split(): #Aqui indica que o literal !A ocorre na iesima clausula
                         cnf.remove(cnf[i]) #Podemos remover essa clausula, ja que A é falso, i.e. !A é verdadeiro, logo a clausula toda é verdadeira
                         i -= 1
@@ -51,10 +58,12 @@ def unit_propagation(cnf, new_true, new_false):
                 new_true.append(unit) #Se nao houver um simbolo de negaçao, adicionamos a variavel ao conjunto de variaveis verdadeiras e a lista de atribuições verdadeiras
                 i = 0 #Começamos a percorrer a fórmula
                 while True:
+                    removeEmpty(cnf[i])
+                    print(cnf[i])
+                    print(cnf[i].split())
                     if '!'+unit in cnf[i].split():
                         cnf[i] = cnf[i].replace('!'+unit, '').strip() #Se ocorrer o literal !A, este é falso, logo removemos da clausula
-                        if '  ' in cnf[i]:
-                            cnf[i] = cnf[i].replace('  ', ' ') 
+                        removeEmpty(cnf[i])
                     elif unit in cnf[i].split():
                         cnf.remove(cnf[i]) #Se ocorrer o literal A, podemos remover a clausula inteira
                         i -= 1
@@ -109,7 +118,7 @@ def verificaSintaxeETransforma(cnf):
         if simbolo in transform.OPERACOES:
             cnf = transform.transformacaoTseytinDescritiva(cnf)
             return transform.mudarSintaxeCNF(cnf)
-    return cnf
+    return transform.mudarSintaxeCNF(cnf)
 
 def dpll(): #Aqui é onde a execução ocorre
     global true_vars, false_vars, n_props, n_splits #Usamos as variáveis globais
