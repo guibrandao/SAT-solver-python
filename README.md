@@ -1,7 +1,7 @@
 # Resolvedor SAT-CNF
-Este código é parte do projeto da disciplina **Projeto e Complexidade de Algoritmos 1** na Universidade de Brasília no período 1/2025. Ele decide o problema de Satisfatibilidade de Fórmulas Booleanas em sua [Forma Normal Conjuntiva](https://en.wikipedia.org/wiki/Conjunctive_normal_form) utilizando o [Algoritmo DPLL](https://en.wikipedia.org/wiki/DPLL_algorithm). Além de apenas decidir se uma fórmula dada é satisfatível, ele também retorna uma possível solução, caso exista.
+Este código é parte do projeto da disciplina **Projeto e Complexidade de Algoritmos 1** na Universidade de Brasília no período 1/2025. Ele decide o problema de Satisfatibilidade de Fórmulas Booleanas utilizando o [Algoritmo DPLL](https://en.wikipedia.org/wiki/DPLL_algorithm). Além de apenas decidir se uma fórmula dada é satisfatível, ele também retorna uma possível solução, caso exista.
 
-Tiramos inspiração [desta fonte](https://github.com/safwankdb/SAT-Solver-using-DPLL) e executamos algumas modificações que contemplam aceitar fórmulas com variáveis de comprimento maior que 1 e indexação. Isso nos livra da limitaçao (pelo tamanho do nosso alfabeto) de variáveis que podemos adicionar ná fórmula.
+Tiramos inspiração [desta fonte](https://github.com/safwankdb/SAT-Solver-using-DPLL) e executamos algumas modificações que contemplam aceitar fórmulas com variáveis de comprimento maior que 1 e indexação. Isso nos livra da limitaçao (pelo tamanho do nosso alfabeto) de variáveis que podemos adicionar ná fórmula. Além disso, integramos com um código para a [Transformação de Tseytin](https://pt.wikipedia.org/wiki/Transformação_de_Tseytin), transformando qualquer fórmula booleana em uma fórmula em [Forma Normal Conjuntiva](https://en.wikipedia.org/wiki/Conjunctive_normal_form) que preserva satisfatibilidade.  
 
 ## Como Usar
 Escrevemos em um arquivo texto uma fórmula em FNC separando as cláusulas por linha. Por exemplo:
@@ -16,6 +16,8 @@ Salvamos este arquivo em .txt e executamos o seguinte comando no Terminal:
 ```
 $ python3 DPLL.py <diretorio>/<arquivo>.txt
 ```
+
+Podemos também escrever a fórmula desejada diretamente como entrada para o programa, após executá-lo.
 
 ## Exemplo
 
