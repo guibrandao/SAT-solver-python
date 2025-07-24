@@ -1,6 +1,7 @@
 import sys
 import re
 import CNF_Tseytin_Transformer as transform
+from const import OPERACOES
 from copy import deepcopy
 
 true_vars = set() #Conjunto de variáveis verdadeiras
@@ -113,8 +114,8 @@ def solve(cnf,literals):
 
 def verificaSintaxeETransforma(cnf):
     for simbolo in cnf:
-        if simbolo in transform.OPERACOES:
-            cnf = transform.transformacaoTseytinDescritiva(cnf)
+        if simbolo in OPERACOES:
+            cnf = transform.transformacaoTseytin(cnf,True)
             return transform.mudarSintaxeCNF(cnf)
     return transform.mudarSintaxeCNF(cnf)
 
