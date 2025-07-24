@@ -81,6 +81,7 @@ def transformacaoTseytin(formula,descritivo=False):
     if descritivo: print(f'A sua fórmula é: \n {formula}')
     formula = formula.replace('!!','')
     formula = formula.replace(' ','')
+    formula = formula.replace('\n','')
     formula = aj.ajustarParenteses(formula)
     lista = listaSubformulas(formula)
     if descritivo: print(f'Depois de alguns ajustes ela fica: \n {formula}')
